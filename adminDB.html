@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bella Vista Admin</title>
+<style>
+:root{--bg:#fff;--sub:#f6f8fa;--bd:#d0d7de;--fg:#1f2328;--mut:#656d76;--acc:#0969da;--gbtn:#1f883d;--gbtn-h:#1a7f37;--ok:#1a7f37;--warn:#9a6700;--info:#0969da;--bad:#cf222e;--gray:#656d76;--tab:#fd8c73;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--sub:#161b22;--bd:#30363d;--fg:#e6edf3;--mut:#8d96a0;--acc:#4493f8;--gbtn:#238636;--gbtn-h:#2ea043;--ok:#3fb950;--warn:#d29922;--info:#4493f8;--bad:#f85149;--gray:#8d96a0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--sub:#161b22;--bd:#30363d;--fg:#e6edf3;--mut:#8d96a0;--acc:#4493f8;--gbtn:#238636;--gbtn-h:#2ea043;--ok:#3fb950;--warn:#d29922;--info:#4493f8;--bad:#f85149;--gray:#8d96a0;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif}
+h1,h2{margin:0}
+button,input,select{font:inherit;color:inherit}
+code{font:12px ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;background:rgba(129,139,152,.18);padding:.2em .4em;border-radius:6px}
+a{color:var(--acc)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:-1px}
+.c{max-width:1280px;margin:0 auto;padding:0 32px}
+.hd{background:var(--sub);border-bottom:1px solid var(--bd)}
+.top{display:flex;align-items:center;gap:12px;padding-top:16px;padding-bottom:16px}
+.top svg{width:32px;height:32px;fill:var(--fg)}
+.crumb{font-size:14px}.crumb b{font-weight:600}.crumb span{color:var(--mut);padding:0 4px}
+.sp{flex:1}
+.av{width:28px;height:28px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px}
+.tabs{display:flex;gap:2px;overflow-x:auto}
+.tabs a{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;color:var(--fg);text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a:hover{background:rgba(129,139,152,.12);border-radius:6px 6px 0 0}
+.tabs a.on{font-weight:600;border-bottom-color:var(--tab)}
+.cnt{font-size:12px;font-weight:500;padding:0 6px;line-height:18px;border-radius:2em;background:rgba(129,139,152,.22);color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;font-weight:500;line-height:20px;border:1px solid var(--bd);border-radius:6px;background:var(--sub);color:var(--fg);cursor:pointer;text-decoration:none}
+.btn:hover{background:rgba(129,139,152,.18)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:3px 12px;font-size:12px}
+.btn.pri{background:var(--gbtn);border-color:rgba(31,35,40,.15);color:#fff}
+.btn.pri:hover:not(:disabled){background:var(--gbtn-h)}
+.btn.dng{color:var(--bad)}
+.btn.dng:hover:not(:disabled){background:var(--bad);color:#fff;border-color:var(--bad)}
+input,select{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:5px 12px;line-height:20px}
+input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 30%,transparent);outline:0}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding:24px 0 16px}
+.ph h1{font-size:24px;font-weight:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ph p{margin:4px 0 0;color:var(--mut)}
+.Label{display:inline-block;padding:0 7px;font-size:12px;font-weight:500;line-height:18px;border:1px solid var(--c,var(--mut));color:var(--c,var(--mut));border-radius:2em;white-space:nowrap}
+.Pending{--c:var(--warn)}.Approved{--c:var(--ok)}.Checkedin{--c:var(--info)}.Checkedout{--c:var(--gray)}.Cancelled{--c:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.box{border:1px solid var(--bd);border-radius:6px;margin-bottom:16px;background:var(--bg);min-width:0}
+.bh{background:var(--sub);padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-radius:6px 6px 0 0}
+.bh h2{font-size:14px;font-weight:600}
+.bb{padding:16px}
+.st{padding:16px}.st small{color:var(--mut)}.st b{display:block;font-size:24px;font-weight:600;line-height:1.3}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;align-items:start}
+.item{display:flex;gap:12px;padding:14px 16px;border-top:1px solid var(--bd);align-items:flex-start}
+.item:first-child{border-top:0}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--warn);margin-top:6px;flex:none}
+.item .body{flex:1;min-width:0}
+.item .t{font-size:15px}.item .t b{font-weight:600}
+.item .m{color:var(--mut);font-size:13px;margin-top:2px}
+.item .pay{margin-top:8px;padding:8px 12px;border:1px solid var(--bd);border-radius:6px;background:var(--sub);font-size:13px}
+.item .btns{display:flex;gap:8px;flex:none}
+.empty{padding:28px 16px;text-align:center;color:var(--mut)}
+.fl{display:flex;gap:4px;flex-wrap:wrap}
+.fl button{background:none;border:0;padding:4px 10px;border-radius:6px;cursor:pointer;color:var(--mut);display:inline-flex;gap:6px;align-items:center}
+.fl button:hover{background:rgba(129,139,152,.15)}
+.fl button.on{color:var(--fg);font-weight:600;background:rgba(129,139,152,.2)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th{background:var(--sub);text-align:left;font-weight:600;padding:8px 16px;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:10px 16px;border-top:1px solid var(--bd);vertical-align:top}
+tbody tr:first-child td{border-top:0}
+td small{display:block;color:var(--mut);font-size:12px}
+.act{white-space:nowrap}.act .btn{margin:0 4px 4px 0}
+.av2{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--bd)}
+.av2:first-child{border-top:0}.av2 b{font-weight:600}.av2 small{display:block;color:var(--mut);font-size:12px}
+.available{--c:var(--ok)}.reserved{--c:var(--warn)}.inhouse{--c:var(--info)}
+.rep{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--bd)}
+.rep div{padding:16px;border-left:1px solid var(--bd)}.rep div:first-child{border-left:0}
+.rep small{color:var(--mut);display:block}.rep b{font-size:20px;font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:20px;height:150px;padding-top:22px}
+.bar{flex:1;text-align:center;font-size:12px;color:var(--mut)}
+.bar div{background:var(--ok);height:var(--h);border-radius:6px 6px 0 0;margin-bottom:6px;position:relative;min-height:3px}
+.bar div::after{content:attr(data-v);position:absolute;top:-20px;left:0;right:0;color:var(--fg);font-size:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.pl{margin:0;padding:0;list-style:none}.pl li{padding:10px 16px;border-top:1px solid var(--bd);color:var(--mut)}
+.pl li:first-child{border-top:0}.pl b{color:var(--fg);display:block;font-weight:600}
+.terms{margin:0;padding:12px 16px 12px 36px;color:var(--mut)}.terms li{margin-bottom:6px}
+dialog{background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:12px;padding:0;width:min(500px,94vw)}
+dialog::backdrop{background:rgba(1,4,9,.6)}
+.dh{padding:16px;border-bottom:1px solid var(--bd);background:var(--sub);border-radius:12px 12px 0 0}
+.dh h2{font-size:16px;font-weight:600}
+.db{padding:16px}
+dialog label{display:block;margin-top:12px;font-weight:600}
+dialog label:first-child{margin-top:0}
+dialog input,dialog select{width:100%;margin-top:4px;font-weight:400}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sum{background:var(--sub);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;margin-top:14px}
+.sum div{display:flex;justify-content:space-between}
+.sum .tt{font-weight:600;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd)}
+.msg{color:var(--bad);min-height:20px;margin-top:8px;font-weight:500}
+details{margin-top:8px}summary{cursor:pointer;color:var(--acc)}
+.chk{display:flex!important;gap:8px;align-items:center;font-weight:400!important}.chk input{width:auto;margin:0}
+.row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));right:16px;max-width:380px;background:var(--sub);color:var(--fg);border:1px solid var(--bd);border-left:4px solid var(--ok);padding:12px 16px;border-radius:6px;box-shadow:0 8px 24px rgba(1,4,9,.3);opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+@media (max-width:1050px){.cols{grid-template-columns:1fr}.stats,.rep{grid-template-columns:repeat(2,1fr)}.rep div:nth-child(3){border-left:0}.rep div:nth-child(n+3){border-top:1px solid var(--bd)}}
+@media (max-width:640px){.c{padding:0 16px}.item{flex-wrap:wrap}.item .btns{width:100%;padding-left:22px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="hd">
+  <div class="c top">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 4 26h24L16 4Zm0 7 6.6 12H9.4L16 11Z"/></svg>
+    <div class="crumb"><b>Bella Vista</b><span>/</span><b>admin</b></div>
+    <span class="Label">Hotel &amp; Events Place</span>
+    <div class="sp"></div>
+    <button class="btn sm" id="theme">Theme</button><div class="av" title="Admin">A</div>
+  </div>
+  <div class="c"><nav class="tabs" id="nav" aria-label="Admin">
+    <a href="#top" class="on">Overview</a><a href="#requests">Requests <span class="cnt" id="c-req">0</span></a><a href="#reservations">Reservations <span class="cnt" id="c-res">0</span></a><a href="#availability">Availability</a><a href="#reports">Reports</a><a href="#policies">Policies</a>
+  </nav></div>
+</header>
+ 
+<main class="c" id="top">
+  <div class="ph">
+    <div><h1>Bella Vista Hotel &amp; Events Place <span class="Label Approved">Admin</span></h1><p id="today"></p></div>
+    <button class="btn pri" id="add">New booking request</button>
+  </div>
+  <section class="stats" aria-label="Summary">
+    <div class="box st" style="margin:0"><small>Arrivals today</small><b id="s-arr">0</b></div>
+    <div class="box st" style="margin:0"><small>Units available today</small><b id="s-free">0</b></div>
+    <div class="box st" style="margin:0"><small>Pending requests</small><b id="s-pend">0</b></div>
+    <div class="box st" style="margin:0"><small>Revenue collected</small><b id="s-rev">₱0</b></div>
+  </section>
+  <div class="cols">
+    <div>
+      <section class="box" id="requests">
+        <div class="bh"><h2>Booking requests <span class="cnt" id="reqCount">0</span></h2><button class="btn sm pri" id="acceptAll">Accept all</button></div>
+        <div id="reqList"></div>
+      </section>
+      <section class="box" id="reservations">
+        <div class="bh"><div class="fl" id="tabsF"></div><input id="q" type="search" placeholder="Search guest name" aria-label="Search guest name"></div>
+        <div class="tw"><table><thead><tr><th>Guest</th><th>Unit</th><th>Stay</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div>
+        <div class="empty" id="none" hidden>No reservations match. Try another filter or search.</div>
+      </section>
+      <section class="box" id="reports">
+        <div class="bh"><h2>Booking and revenue report</h2></div>
+        <div class="rep" id="rep"></div>
+        <div class="bb"><small style="color:var(--mut)">Revenue collected by room type</small><div class="bars" id="bars"></div><div class="chips" id="chips"></div></div>
+      </section>
+    </div>
+    <aside>
+      <section class="box" id="availability">
+        <div class="bh"><h2>Availability</h2><input type="date" id="adate" aria-label="Availability date"></div>
+        <div id="units"></div>
+      </section>
+      <section class="box" id="policies">
+        <div class="bh"><h2>Rates and capacity</h2></div>
+        <ul class="pl">
+          <li><b>Standard rooms: Room A, B, C</b>₱3,500 per night for 2 to 3 guests. Add ₱1,000 for a 3rd guest.</li>
+          <li><b>Family rooms: FR1, FR2, FR3</b>₱6,000 per night for 4 to 5 guests.</li>
+          <li><b>Event Hall</b>₱15,000 per night for up to 30 guests. Add ₱500 per guest from 31 to 40.</li>
+          <li><b>Hours</b>Open Monday to Sunday. Check-in 2:00 PM, check-out 12:00 NN.</li>
+        </ul>
+        <div class="bh" style="border-radius:0;border-top:1px solid var(--bd)"><h2>Terms and conditions</h2></div>
+        <ol class="terms" id="terms"></ol>
+      </section>
+    </aside>
+  </div>
+</main>
+ 
+<dialog id="dlg">
+  <form id="form">
+    <div class="dh"><h2>New booking request</h2></div>
+    <div class="db">
+      <label>Guest name<input name="guest" required></label>
+      <label>Room or facility<select name="unit" id="unitSel"></select></label>
+      <div class="two">
+        <label>Check-in (2:00 PM)<input type="date" name="ci" required></label>
+        <label>Check-out (12:00 NN)<input type="date" name="co" required></label>
+      </div>
+      <div class="two">
+        <label>Guests<input type="number" name="guests" min="1" value="2" required></label>
+        <label>Downpayment (₱)<input type="number" name="dp" min="1" required></label>
+      </div>
+      <div class="two">
+        <label>Payment method<select name="method"><option>GCash</option><option>Bank transfer</option><option>Cash</option></select></label>
+        <label>Payment reference<input name="ref" placeholder="Reference number"></label>
+      </div>
+      <div class="sum" id="sum"></div>
+      <div class="msg" id="msg" role="alert"></div>
+      <details><summary>Terms and conditions</summary><ol class="terms" id="terms2"></ol></details>
+      <label class="chk"><input type="checkbox" name="terms" required> Guest accepted the terms and conditions</label>
+      <div class="row"><button type="button" class="btn" id="cancelDlg">Cancel</button><button class="btn pri">Submit request</button></div>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+ 
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAY=864e5,T=new Date();T.setHours(0,0,0,0);
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const off=n=>iso(new Date(T.getFullYear(),T.getMonth(),T.getDate()+n));
+const nights=(a,b)=>Math.round((parse(b)-parse(a))/DAY);
+const fmt=s=>parse(s).toLocaleDateString('en-PH',{month:'short',day:'numeric'});
+const peso=n=>'₱'+Math.round(n).toLocaleString('en-PH');
+const TODAY=iso(T);
+const cls=s=>s.replace(/ /g,'');
+const TERMS=['A downpayment secures the reservation. The remaining balance is paid at check-in.','Cancellations made less than 3 days before check-in are non-refundable.','Guests are billed for any damage or loss to hotel property, furniture or fixtures.','No smoking inside guest rooms. Violations carry a ₱2,000 fine.','Keep noise to a minimum after 10:00 PM around the accommodation areas.'];
+const U=[
+ {id:'Room A',type:'Standard',cap:3,rate:3500},{id:'Room B',type:'Standard',cap:3,rate:3500},{id:'Room C',type:'Standard',cap:3,rate:3500},
+ {id:'FR1',type:'Family',cap:5,rate:6000},{id:'FR2',type:'Family',cap:5,rate:6000},{id:'FR3',type:'Family',cap:5,rate:6000},
+ {id:'Event Hall',type:'Event Hall',cap:40,rate:15000}];
+const unit=id=>U.find(u=>u.id===id);
+function quote(id,g,n){const u=unit(id);let x=0;
+  if(u.type==='Standard'&&g>2)x=1000;
+  if(u.type==='Event Hall'&&g>30)x=(g-30)*500;
+  return{rate:u.rate,extra:x,nights:n,total:(u.rate+x)*n}}
+const mk=(id,guest,u,g,a,b,status,method,ref)=>{const ci=off(a),co=off(b),t=quote(u,g,nights(ci,co)).total;
+  return{id,guest,unit:u,guests:g,ci,co,total:t,paid:/Checked/.test(status)?t:Math.round(t/2),status,method,ref,note:''}};
+let R=[
+ mk('BV-1046','Nina Ramos','FR2',5,6,8,'Pending','GCash','3321 7790 1145'),
+ mk('BV-1045','Carlo Bautista','FR3',4,0,2,'Approved','GCash','2210 8841 0033'),
+ mk('BV-1044','Angela Cruz','Room B',2,-1,1,'Checked in','Cash',''),
+ mk('BV-1043','Liza Fernandez','FR1',5,1,4,'Approved','Bank transfer','BPI-77120'),
+ mk('BV-1042','Maria Santos','Room A',3,2,4,'Pending','GCash','8841 2203 5567'),
+ mk('BV-1041','Paolo Mendoza','Event Hall',28,5,6,'Pending','Bank transfer','BDO-55019'),
+ mk('BV-1040','Jericho Reyes','Event Hall',36,10,11,'Approved','GCash','1190 4472 8810'),
+ mk('BV-1039','Ramon Villanueva','FR2',4,3,5,'Cancelled','GCash','7765 0021 9904'),
+ mk('BV-1038','Grace Dizon','Room C',2,-3,-1,'Checked out','Cash','')];
+R[7].paid=0;R[7].note='Downpayment refunded';
+let tab='All',seq=1047;
+const blocking=r=>['Pending','Approved','Checked in'].includes(r.status);
+const clash=(r,uid,ci,co,skipPending)=>blocking(r)&&!(skipPending&&r.status==='Pending')&&r.unit===uid&&ci<r.co&&r.ci<co;
+const conflict=(uid,ci,co)=>R.find(r=>clash(r,uid,ci,co));
+const taken=r=>R.some(x=>x!==r&&clash(x,r.unit,r.ci,r.co,true));
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),3600)};
+ 
+function accept(r,quiet){
+  if(taken(r)){if(!quiet)toast(r.unit+' is already taken on those dates, so '+r.id+' cannot be accepted.');return false}
+  r.status='Approved';return true;
+}
+const FILTERS=['All','Pending','Approved','Checked in','Cancelled'];
+function renderFilters(){$('tabsF').innerHTML=FILTERS.map(t=>`<button class="${t===tab?'on':''}" data-t="${t}">${t} <span class="cnt">${t==='All'?R.length:R.filter(r=>r.status===t).length}</span></button>`).join('')}
+function renderReq(){
+  const p=R.filter(r=>r.status==='Pending');
+  $('reqCount').textContent=p.length;$('c-req').textContent=p.length;$('c-res').textContent=R.length;
+  $('acceptAll').disabled=!p.length;
+  $('reqList').innerHTML=p.length?p.map(r=>{
+    const n=nights(r.ci,r.co),bal=r.total-r.paid,bad=taken(r);
+    return `<div class="item"><span class="dot"></span><div class="body"><div class="t"><b>${esc(r.guest)}</b> wants <b>${esc(r.unit)}</b> <span class="Label">${unit(r.unit).type}</span>${bad?' <span class="Label Cancelled">Dates taken</span>':''}</div><div class="m"><code>${r.id}</code> ${fmt(r.ci)} to ${fmt(r.co)}, ${n} night${n>1?'s':''}, ${r.guests} guests</div><div class="pay"><b>Payment:</b> ${peso(r.paid)} downpayment via ${esc(r.method)}${r.ref?', ref '+esc(r.ref):''}. Total ${peso(r.total)}, balance ${peso(bal)} at check-in.</div></div><div class="btns"><button class="btn sm pri" data-a="accept" data-id="${r.id}" ${bad?'disabled title="Dates are already taken"':''}>Accept</button><button class="btn sm dng" data-a="decline" data-id="${r.id}">Decline</button></div></div>`}).join(''):'<div class="empty">No pending requests. New requests from guests show up here.</div>';
+}
+function renderRows(){
+  const q=$('q').value.trim().toLowerCase();
+  const list=R.filter(r=>(tab==='All'||r.status===tab)&&r.guest.toLowerCase().includes(q));
+  $('rows').innerHTML=list.map(r=>{
+    let a='';
+    if(r.status==='Pending')a=`<button class="btn sm pri" data-a="accept" data-id="${r.id}" ${taken(r)?'disabled':''}>Accept</button><button class="btn sm dng" data-a="decline" data-id="${r.id}">Decline</button>`;
+    if(r.status==='Approved')a=`<button class="btn sm" data-a="checkin" data-id="${r.id}">Check in</button>`;
+    if(r.status==='Checked in')a=`<button class="btn sm" data-a="checkout" data-id="${r.id}">Check out</button>`;
+    if(r.status==='Approved')a+=`<button class="btn sm dng" data-a="cancel" data-id="${r.id}">Cancel</button>`;
+    const bal=r.total-r.paid,n=nights(r.ci,r.co);
+    const pay=r.status==='Cancelled'?`${peso(r.paid)} kept`:`${peso(r.total)}<small>${r.status==='Pending'?'Downpayment '+peso(r.paid)+' to verify':'Paid '+peso(r.paid)+' via '+esc(r.method)+(bal>0?', '+peso(bal)+' due at check-in':', fully paid')}</small>`;
+    return `<tr><td>${esc(r.guest)}<small><code>${r.id}</code></small></td><td>${esc(r.unit)}<small>${r.guests} guests</small></td><td>${fmt(r.ci)} to ${fmt(r.co)}<small>${n} night${n>1?'s':''}</small></td><td>${pay}</td><td><span class="Label ${cls(r.status)}">${r.status}</span>${r.note?`<small>${esc(r.note)}</small>`:''}</td><td class="act">${a}</td></tr>`}).join('');
+  $('none').hidden=list.length>0;
+}
+function renderAvail(){
+  const d=$('adate').value||TODAY;
+  $('units').innerHTML=U.map(u=>{
+    const r=R.find(x=>blocking(x)&&x.unit===u.id&&x.ci<=d&&d<x.co);
+    const out=R.find(x=>blocking(x)&&x.unit===u.id&&x.co===d);
+    const s=r?(r.status==='Checked in'?'inhouse':'reserved'):'available';
+    const sub=r?esc(r.guest)+', until '+fmt(r.co):out?'Guest leaves by 12:00 NN. Ready from 2:00 PM.':peso(u.rate)+' per night, up to '+u.cap+' guests';
+    return `<div class="av2 ${s}"><div><b>${u.id}</b><small>${sub}</small></div><span class="Label">${{available:'Available',reserved:'Reserved',inhouse:'In house'}[s]}</span></div>`}).join('');
+}
+const collected=r=>r.status==='Pending'?0:r.paid;
+function renderStats(){
+  $('s-arr').textContent=R.filter(r=>blocking(r)&&r.ci===TODAY).length;
+  $('s-free').textContent=U.filter(u=>!R.some(r=>blocking(r)&&r.unit===u.id&&r.ci<=TODAY&&TODAY<r.co)).length+' of '+U.length;
+  $('s-pend').textContent=R.filter(r=>r.status==='Pending').length;
+  $('s-rev').textContent=peso(R.reduce((a,r)=>a+collected(r),0));
+}
+function renderReport(){
+  const live=R.filter(r=>r.status!=='Cancelled');
+  const val=live.reduce((a,r)=>a+r.total,0),got=R.reduce((a,r)=>a+collected(r),0);
+  const bal=R.filter(r=>r.status==='Approved'||r.status==='Checked in').reduce((a,r)=>a+r.total-r.paid,0);
+  $('rep').innerHTML=[['Bookings',live.length],['Booking value',peso(val)],['Collected',peso(got)],['Balance due',peso(bal)]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join('');
+  const by=['Standard','Family','Event Hall'].map(t=>[t,R.filter(r=>unit(r.unit).type===t).reduce((a,r)=>a+collected(r),0)]);
+  const mx=Math.max(1,...by.map(x=>x[1]));
+  $('bars').innerHTML=by.map(([t,v])=>`<div class="bar"><div style="--h:${Math.max(3,v/mx*100)}%" data-v="${peso(v)}"></div>${t}</div>`).join('');
+  $('chips').innerHTML=['Pending','Approved','Checked in','Checked out','Cancelled'].map(s=>`<span class="Label ${cls(s)}">${s}: ${R.filter(r=>r.status===s).length}</span>`).join('');
+}
+const renderAll=()=>{renderFilters();renderReq();renderRows();renderAvail();renderStats();renderReport()};
+ 
+function act(id,a){
+  const r=R.find(x=>x.id===id);if(!r)return;
+  if(a==='accept'){if(!accept(r))return;toast('Accepted '+r.id+': '+r.unit+', '+fmt(r.ci)+' to '+fmt(r.co)+'. '+peso(r.paid)+' downpayment recorded via '+r.method+'.')}
+  if(a==='decline'){r.status='Cancelled';r.paid=0;r.note='Declined, downpayment returned';toast('Declined '+r.id+'. The guest is told to expect the downpayment back.')}
+  if(a==='checkin'){const bal=r.total-r.paid;r.paid=r.total;r.status='Checked in';toast(r.guest+' checked in. Balance collected: '+peso(bal))}
+  if(a==='checkout'){r.status='Checked out';toast(r.guest+' checked out.')}
+  if(a==='cancel'){
+    const late=nights(TODAY,r.ci)<3;r.status='Cancelled';
+    if(late){r.note='Non-refundable (under 3 days before check-in)';toast(r.id+' cancelled. Under 3 days before check-in, so the downpayment is non-refundable.')}
+    else{r.paid=0;r.note='Downpayment refunded';toast(r.id+' cancelled. Downpayment is refundable.')}
+  }
+  renderAll();
+}
+const click=e=>{const b=e.target.closest('button[data-a]');if(b&&!b.disabled)act(b.dataset.id,b.dataset.a)};
+$('rows').onclick=click;$('reqList').onclick=click;
+$('acceptAll').onclick=()=>{
+  const p=R.filter(r=>r.status==='Pending');let n=0,sum=0;
+  p.forEach(r=>{if(accept(r,true)){n++;sum+=r.paid}});
+  toast('Accepted '+n+' of '+p.length+' requests. '+peso(sum)+' in downpayments recorded.'+(n<p.length?' The rest have dates that are already taken.':''));
+  renderAll();
+};
+$('tabsF').onclick=e=>{const b=e.target.closest('button');if(b){tab=b.dataset.t;renderFilters();renderRows()}};
+$('q').oninput=renderRows;
+$('adate').oninput=renderAvail;
+ 
+const f=$('form'),E=f.elements;
+$('unitSel').innerHTML=U.map(u=>`<option value="${u.id}">${u.id} (${peso(u.rate)} per night)</option>`).join('');
+function calc(){
+  const u=unit(E.unit.value),g=+E.guests.value||0,ci=E.ci.value,co=E.co.value,n=ci&&co?nights(ci,co):0;
+  let msg='';
+  if(!ci||!co)msg='Pick the check-in and check-out dates.';
+  else if(ci<TODAY)msg='Check-in cannot be in the past.';
+  else if(n<1)msg='Check-out must be after check-in.';
+  else if(g<1||g>u.cap)msg=u.id+' fits up to '+u.cap+' guests.';
+  else if(conflict(u.id,ci,co))msg=u.id+' is already booked on those dates.';
+  const q=quote(u.id,Math.max(g,1),Math.max(n,1));
+  if(!E.dp.dataset.touched)E.dp.value=Math.round(q.total/2);
+  const dp=+E.dp.value;
+  if(!msg&&(dp<1||dp>q.total))msg='Downpayment must be between ₱1 and '+peso(q.total)+'.';
+  $('sum').innerHTML=`<div><span>Rate per night</span><span>${peso(q.rate)}</span></div><div><span>Extra guest fee per night</span><span>${peso(q.extra)}</span></div><div><span>Nights</span><span>${q.nights}</span></div><div class="tt"><span>Total</span><span>${peso(q.total)}</span></div><div><span>Balance due at check-in</span><span>${peso(Math.max(q.total-dp,0))}</span></div>`;
+  $('msg').textContent=msg;
+  return msg?null:q;
+}
+f.oninput=e=>{
+  if(e.target===E.dp)E.dp.dataset.touched=1;
+  if(e.target===E.ci&&E.ci.value){E.co.min=off(nights(TODAY,E.ci.value)+1);if(E.co.value<=E.ci.value)E.co.value=E.co.min}
+  calc();
+};
+$('add').onclick=()=>{f.reset();delete E.dp.dataset.touched;E.ci.min=TODAY;E.ci.value=TODAY;E.co.min=off(1);E.co.value=off(1);calc();$('dlg').showModal()};
+$('cancelDlg').onclick=()=>$('dlg').close();
+f.onsubmit=e=>{
+  e.preventDefault();const q=calc();if(!q)return;
+  R.unshift({id:'BV-'+(seq++),guest:E.guest.value.trim(),unit:E.unit.value,guests:+E.guests.value,ci:E.ci.value,co:E.co.value,total:q.total,paid:+E.dp.value,status:'Pending',method:E.method.value,ref:E.ref.value.trim(),note:''});
+  $('dlg').close();tab='All';renderAll();toast('Request added. Review it under Booking requests and accept it.');
+};
+$('theme').onclick=()=>{const h=document.documentElement,dark=h.dataset.theme?h.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;h.dataset.theme=dark?'light':'dark'};
+$('nav').onclick=e=>{const a=e.target.closest('a');if(!a)return;document.querySelectorAll('#nav a').forEach(x=>x.classList.toggle('on',x===a))};
+$('today').textContent=T.toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+'. Check-in 2:00 PM, check-out 12:00 NN.';
+$('adate').value=TODAY;$('adate').min=TODAY;
+$('terms').innerHTML=$('terms2').innerHTML=TERMS.map(t=>`<li>${t}</li>`).join('');
+renderAll();
+</script>
+</body>
+</html>
+ 
